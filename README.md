@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/github-repo-banner.svg" alt="Qwen3-8B Speculative Decoding and FP8 Quantization" width="100%">
+  <img src="docs/assets/github-repo-banner.jpg" alt="Nebius AI PE — Qwen3-8B speculative decoding and FP8 quantization on NVIDIA H100" width="100%">
 </p>
 
 <p align="center">
