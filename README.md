@@ -2,6 +2,15 @@
   <img src="docs/assets/github-repo-banner.svg" alt="Qwen3-8B Speculative Decoding and FP8 Quantization" width="100%">
 </p>
 
+<p align="center">
+  <a href="https://www.python.org/"><img alt="Python 3.12" src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&amp;logoColor=white"></a>
+  <a href="https://pytorch.org/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&amp;logoColor=white"></a>
+  <a href="https://docs.vllm.ai/"><img alt="vLLM" src="https://img.shields.io/badge/vLLM-111827?logo=v&amp;logoColor=white"></a>
+  <a href="https://developer.nvidia.com/cuda-zone"><img alt="NVIDIA CUDA" src="https://img.shields.io/badge/CUDA-76B900?logo=nvidia&amp;logoColor=white"></a>
+  <a href="https://www.nvidia.com/en-us/data-center/h100/"><img alt="NVIDIA H100 80GB" src="https://img.shields.io/badge/NVIDIA-H100%2080GB-76B900?logo=nvidia&amp;logoColor=white"></a>
+  <a href="https://huggingface.co/Qwen/Qwen3-8B"><img alt="Hugging Face Qwen3-8B" src="https://img.shields.io/badge/Hugging%20Face-Qwen3--8B-FFD21E"></a>
+</p>
+
 # Qwen3-8B Speculative Decoding and FP8 Quantization
 
 This repository contains the homework workflow for accelerating `Qwen/Qwen3-8B`
