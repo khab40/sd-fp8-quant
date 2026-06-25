@@ -22,7 +22,7 @@ git -C "${SPECULATORS_REPO}" checkout v0.5.0
 
 "${PYTHON_BIN}" -m venv "${ROOT_DIR}/vllm_venv"
 "${ROOT_DIR}/vllm_venv/bin/python" -m pip install --upgrade pip
-"${ROOT_DIR}/vllm_venv/bin/python" -m pip install "vllm==0.20.0" "fastapi<0.137"
+"${ROOT_DIR}/vllm_venv/bin/python" -m pip install "vllm[bench]==0.20.0" "fastapi<0.137"
 
 "${PYTHON_BIN}" -m venv "${ROOT_DIR}/comp_venv"
 "${ROOT_DIR}/comp_venv/bin/python" -m pip install --upgrade pip

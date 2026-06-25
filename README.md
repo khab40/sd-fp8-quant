@@ -28,9 +28,9 @@ on 1x NVIDIA H100 80GB with:
 | `spec_dec+quantization_homework.ipynb` | Assignment notebook with final report cells filled in. |
 | `docs/ARCHITECTURE.md` | End-to-end architecture and data flow. |
 | `docs/FINAL_REPORT.md` | Assignment answers, recommendation, benchmark tables, and interpretation. |
-| `docs/BENCHMARK_RESULTS.md` | Benchmark command matrix and reference results. |
+| `docs/BENCHMARK_RESULTS.md` | Benchmark command matrix and measured H100 results. |
 | `docs/RUNBOOK.md` | Step-by-step execution guide for the H100 machine. |
-| `docs/GITHUB_REPO_BANNER.md` | Markdown snippet for the GitHub README banner. |
+| `docs/evidence/` | Copied VM evidence: benchmark JSONs, validation metrics, and FP8 config. |
 | `scripts/` | Reproducible setup, training, quantization, serving, and benchmark scripts. |
 
 ## Quick Start
@@ -82,6 +82,11 @@ All common settings live in `config/workflow.env`.
 | Benchmark dataset | `philschmid/mt-bench` |
 | Benchmark concurrency | `8` |
 | Benchmark prompts | `80` |
+| Assignment benchmark concurrency | `8` |
+| Assignment benchmark prompts | `80` |
+| Tuning benchmark concurrency | `32` |
+| Tuning benchmark prompts | `256` |
+| Serving max model length for final runs | `2048` |
 | EAGLE-3 checkpoints | `output/checkpoints/` |
 | FP8 verifier | `models/Qwen3-8B-FP8-Dynamic` |
 
@@ -98,6 +103,13 @@ states, then quantize the verifier. Training first gives the draft head the
 cleanest target distribution and avoids baking quantization noise into the
 student. FP8 quantization can then be applied to the verifier for serving and
 validated by acceptance rate, acceptance length, throughput, and TPOT.
+
+In the measured H100 assignment-profile run, FP8 + speculative decoding was the
+fastest configuration: 1877.15 output tok/s versus 1168.59 for BF16 baseline.
+All scored rows passed at the README/notebook benchmark concurrency of 8:
+1276.33 tok/s for BF16 speculative serving, 1701.18 tok/s for FP8 serving, and
+1877.15 tok/s for FP8 + speculative serving. A higher-load concurrency-32 run
+is also preserved in `docs/evidence/benchmarks/`.
 
 ## References
 

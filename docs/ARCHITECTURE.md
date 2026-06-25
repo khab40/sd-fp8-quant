@@ -54,7 +54,8 @@ The key order is:
 
 Training before quantization keeps the draft-head target distribution clean.
 Quantization is then treated as a serving optimization whose impact is measured
-through acceptance rate, acceptance length, throughput, and TPOT.
+through throughput and TPOT. Acceptance metrics should also be collected when
+available from the serving stack.
 
 ## Artifact Layout
 
@@ -66,7 +67,7 @@ through acceptance rate, acceptance length, throughput, and TPOT.
 │   ├── ARCHITECTURE.md
 │   ├── BENCHMARK_RESULTS.md
 │   ├── FINAL_REPORT.md
-│   ├── GITHUB_REPO_BANNER.md
+│   ├── evidence/
 │   └── RUNBOOK.md
 ├── scripts/
 │   ├── bootstrap_envs.sh
@@ -78,7 +79,8 @@ through acceptance rate, acceptance length, throughput, and TPOT.
 │   ├── validate_quant_config.py
 │   ├── make_fp8_speculator_checkpoint.py
 │   ├── serve_model.sh
-│   └── bench_one.sh
+│   ├── bench_one.sh
+│   └── run_benchmark_mode.sh
 ├── models/
 │   └── Qwen3-8B-FP8-Dynamic/
 └── output/
