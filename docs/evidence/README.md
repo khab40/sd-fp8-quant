@@ -16,12 +16,17 @@ Small measured artifacts copied from the Nebius H100 VM.
 - `benchmarks/spec_c8_p80_t2.json`
 - `benchmarks/fp8_c8_p80.json`
 - `benchmarks/fp8_spec_c8_p80_t1.json`
+- `benchmarks/speculative_acceptance_metrics.json`
 
 These are the saved `vllm bench serve` JSON files for the four measured
 serving configurations. Files with `c8_p80` in the name use the primary
 assignment profile: 80 prompts, concurrency 8, `MAX_MODEL_LEN=2048`, and
 non-eager serving. Files with `score` in the name preserve the higher-load
 tuning profile: 256 prompts and concurrency 32.
+
+`speculative_acceptance_metrics.json` contains acceptance rate, acceptance
+length, accepted-token counts, and drafted-token counts extracted from the vLLM
+`SpecDecoding metrics` log lines for the matching speculative runs.
 
 ## Training
 

@@ -60,12 +60,12 @@ The primary assignment profile uses the README/notebook settings of
 `BENCH_NUM_PROMPTS=80` and `BENCH_CONCURRENCY=8`, with non-eager serving,
 `MAX_MODEL_LEN=2048`, and `BENCH_OUTPUT_LEN=256`.
 
-| Configuration | Output tok/s | Mean TTFT, ms | Mean TPOT, ms | Completed / Failed |
-| --- | ---: | ---: | ---: | ---: |
-| Baseline | 1168.59 | 40.57 | 6.71 | 80 / 0 |
-| Speculative decoding | 1276.33 | 129.29 | 5.45 | 80 / 0 |
-| FP8 quantization | 1701.18 | 32.05 | 4.59 | 80 / 0 |
-| FP8 + speculative decoding | 1877.15 | 56.11 | 3.90 | 80 / 0 |
+| Configuration | Output tok/s | Acceptance rate | Acceptance length | Mean TPOT, ms | Completed / Failed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Baseline | 1168.59 | N/A | N/A | 6.71 | 80 / 0 |
+| Speculative decoding | 1276.33 | 19.8% | 1.40 | 5.45 | 80 / 0 |
+| FP8 quantization | 1701.18 | N/A | N/A | 4.59 | 80 / 0 |
+| FP8 + speculative decoding | 1877.15 | 33.7% | 1.34 | 3.90 | 80 / 0 |
 
 | Requirement | Threshold | Measured | Result |
 | --- | ---: | ---: | --- |
@@ -79,24 +79,26 @@ Expected performance score from these assignment-profile artifacts is
 The repository also preserves a higher-load tuning profile with 256 prompts and
 concurrency 32:
 
-| Configuration | Output tok/s | Mean TPOT, ms | Completed / Failed |
-| --- | ---: | ---: | ---: |
-| Baseline | 4297.31 | 7.16 | 256 / 0 |
-| Speculative decoding | 4315.99 | 6.07 | 256 / 0 |
-| FP8 quantization | 5895.88 | 5.16 | 256 / 0 |
-| FP8 + speculative decoding | 5809.51 | 4.41 | 256 / 0 |
+| Configuration | Output tok/s | Acceptance rate | Acceptance length | Mean TPOT, ms | Completed / Failed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Baseline | 4297.31 | N/A | N/A | 7.16 | 256 / 0 |
+| Speculative decoding | 4315.99 | 20.7% | 1.41 | 6.07 | 256 / 0 |
+| FP8 quantization | 5895.88 | N/A | N/A | 5.16 | 256 / 0 |
+| FP8 + speculative decoding | 5809.51 | 33.6% | 1.34 | 4.41 | 256 / 0 |
 
 ## Draft Token Tuning
 
-| Configuration | Configured draft tokens | Acceptance metrics | Assignment TPOT, ms | Assignment output tok/s |
-| --- | ---: | --- | ---: | ---: |
-| Speculative decoding | 2 | Not emitted in saved JSON | 5.45 | 1276.33 |
-| FP8 + speculative decoding | 1 | Not emitted in saved JSON | 3.90 | 1877.15 |
+| Configuration | Configured draft tokens | Acceptance rate | Acceptance length | Assignment TPOT, ms | Assignment output tok/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Speculative decoding | 2 | 19.8% | 1.40 | 5.45 | 1276.33 |
+| FP8 + speculative decoding | 1 | 33.7% | 1.34 | 3.90 | 1877.15 |
 
-The saved benchmark JSON files do not include acceptance rate or acceptance
-length. The draft-token choices are therefore justified by measured throughput
-and TPOT: `SPEC_TOKENS=2` for BF16 speculative serving and
-`FP8_SPEC_TOKENS=1` for FP8 + speculative serving.
+The benchmark JSON files do not include acceptance fields directly, so these
+values were extracted from vLLM `SpecDecoding metrics` log lines and saved in
+`docs/evidence/benchmarks/speculative_acceptance_metrics.json`. The draft-token
+choices are justified by acceptance and TPOT: `SPEC_TOKENS=2` improved BF16
+TPOT to 5.45 ms with acceptance length 1.40, while `FP8_SPEC_TOKENS=1` produced
+the best assignment TPOT, 3.90 ms, with a higher draft acceptance rate of 33.7%.
 
 ## Task 1 Answers
 
@@ -155,8 +157,10 @@ than one output token. The draft model is cheaper than the verifier, so partial
 acceptance can still reduce average verifier work per output token.
 
 In the measured assignment profile, BF16 speculative serving with two draft
-tokens improved output throughput over baseline, from 1168.59 to 1276.33 tok/s,
-and reduced TPOT from 6.71 ms to 5.45 ms. FP8 + speculative serving with one
-draft token reached 1877.15 tok/s and 3.90 ms TPOT, making it the best
-assignment-profile result. The higher-load c32 profile is also preserved and
-shows FP8 alone slightly ahead of FP8 + speculative at that traffic level.
+tokens had 19.8% average draft acceptance, 1.40 mean acceptance length, improved
+output throughput over baseline from 1168.59 to 1276.33 tok/s, and reduced TPOT
+from 6.71 ms to 5.45 ms. FP8 + speculative serving with one draft token had
+33.7% acceptance, 1.34 mean acceptance length, and reached 1877.15 tok/s with
+3.90 ms TPOT, making it the best assignment-profile result. The higher-load c32
+profile is also preserved and shows FP8 alone slightly ahead of FP8 +
+speculative at that traffic level.

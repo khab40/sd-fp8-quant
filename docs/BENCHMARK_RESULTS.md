@@ -41,12 +41,12 @@ generation failures.
 
 ## Assignment Profile Summary
 
-| Configuration | Evidence JSON | Draft tokens | Duration, s | Requests/s | Output tok/s | Total tok/s | Mean TTFT, ms | Mean TPOT, ms | Completed / Failed |
+| Configuration | Evidence JSON | Draft tokens | Acceptance rate | Acceptance length | Duration, s | Requests/s | Output tok/s | Mean TPOT, ms | Completed / Failed |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Baseline | `baseline_c8_p80.json` | N/A | 17.53 | 4.56 | 1168.59 | 1551.91 | 40.57 | 6.71 | 80 / 0 |
-| Speculative decoding | `spec_c8_p80_t2.json` | 2 | 16.05 | 4.99 | 1276.33 | 1695.00 | 129.29 | 5.45 | 80 / 0 |
-| FP8 quantization | `fp8_c8_p80.json` | N/A | 12.04 | 6.65 | 1701.18 | 2259.22 | 32.05 | 4.59 | 80 / 0 |
-| FP8 + speculative decoding | `fp8_spec_c8_p80_t1.json` | 1 | 10.91 | 7.33 | 1877.15 | 2492.90 | 56.11 | 3.90 | 80 / 0 |
+| Baseline | `baseline_c8_p80.json` | N/A | N/A | N/A | 17.53 | 4.56 | 1168.59 | 6.71 | 80 / 0 |
+| Speculative decoding | `spec_c8_p80_t2.json` | 2 | 19.8% | 1.40 | 16.05 | 4.99 | 1276.33 | 5.45 | 80 / 0 |
+| FP8 quantization | `fp8_c8_p80.json` | N/A | N/A | N/A | 12.04 | 6.65 | 1701.18 | 4.59 | 80 / 0 |
+| FP8 + speculative decoding | `fp8_spec_c8_p80_t1.json` | 1 | 33.7% | 1.34 | 10.91 | 7.33 | 1877.15 | 3.90 | 80 / 0 |
 
 ## Grading Check
 
@@ -64,12 +64,12 @@ The repository also preserves a higher-load run with 256 prompts and concurrency
 32. It is useful to show that the H100 was previously under-driven by the
 low-load run and that the fixed non-eager serving path scales as expected.
 
-| Configuration | Evidence JSON | Draft tokens | Output tok/s | Mean TPOT, ms | Completed / Failed |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Baseline | `baseline_score_c32_p256.json` | N/A | 4297.31 | 7.16 | 256 / 0 |
-| Speculative decoding | `spec_score_t2_c32_p256.json` | 2 | 4315.99 | 6.07 | 256 / 0 |
-| FP8 quantization | `fp8_score_c32_p256.json` | N/A | 5895.88 | 5.16 | 256 / 0 |
-| FP8 + speculative decoding | `fp8_spec_score_t1_c32_p256.json` | 1 | 5809.51 | 4.41 | 256 / 0 |
+| Configuration | Evidence JSON | Draft tokens | Acceptance rate | Acceptance length | Output tok/s | Mean TPOT, ms | Completed / Failed |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Baseline | `baseline_score_c32_p256.json` | N/A | N/A | N/A | 4297.31 | 7.16 | 256 / 0 |
+| Speculative decoding | `spec_score_t2_c32_p256.json` | 2 | 20.7% | 1.41 | 4315.99 | 6.07 | 256 / 0 |
+| FP8 quantization | `fp8_score_c32_p256.json` | N/A | N/A | N/A | 5895.88 | 5.16 | 256 / 0 |
+| FP8 + speculative decoding | `fp8_spec_score_t1_c32_p256.json` | 1 | 33.6% | 1.34 | 5809.51 | 4.41 | 256 / 0 |
 
 ## Interpretation
 
@@ -86,10 +86,13 @@ shape: use FP8 + speculative for the assignment c8 result, but prefer FP8 alone
 for the higher-load c32 profile unless further tuning makes combined serving a
 consistent win.
 
-The saved benchmark JSONs do not emit speculative acceptance rate or acceptance
-length. Draft-token choice is therefore justified from measured throughput and
-TPOT: `SPEC_TOKENS=2` for BF16 speculative serving, and `FP8_SPEC_TOKENS=1`
-for FP8 + speculative serving.
+The saved benchmark JSONs do not emit speculative acceptance fields directly,
+so acceptance metrics were extracted from vLLM `SpecDecoding metrics` log lines
+and saved in `speculative_acceptance_metrics.json`. Draft-token choice is
+justified from acceptance and TPOT: `SPEC_TOKENS=2` gives BF16 speculative
+acceptance length 1.40 at c8 and 1.41 at c32, while `FP8_SPEC_TOKENS=1` gives a
+higher per-draft acceptance rate around 33.6-33.7% and the best assignment TPOT
+of 3.90 ms.
 
 ## Historical First Run
 
